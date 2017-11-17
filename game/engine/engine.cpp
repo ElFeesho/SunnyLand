@@ -101,8 +101,8 @@ void SL::Parallax::draw() {
 }
 
 void SL::Parallax::scroll(int32_t scrollX, int32_t scrollY) {
-    _x += scrollX;
-    _y += scrollY;
+    _x = scrollX;
+    _y = scrollY;
 }
 
 SL::Tilemap::Tilemap(uint32_t width, uint32_t height, std::vector<SL::Tilemap::Layer> layers) : _w{width}, _h{height}, _layers{layers} {
