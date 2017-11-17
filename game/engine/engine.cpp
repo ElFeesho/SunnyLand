@@ -1,3 +1,4 @@
+#include <cstdint>
 #include "engine.h"
 #include "json.hpp"
 
@@ -138,7 +139,11 @@ void SL::Tilemap::Layer::draw(int32_t x, int32_t y) {
 
 void SL::Tilemap::Layer::drawTile(uint32_t tileX, uint32_t tileY, int32_t x, int32_t y) {
     auto tileNumber = tile(tileX, tileY);
-    int32_t sourceX = tileNumber%(_tileset.width()/16);
-    int32_t sourceY = tileNumber/(_tileset.width()/16);
-    _gfx->drawImage(_tileset, x, y, sourceX*16, sourceY*16, 16, 16, false);
+
+    if (tileNumber > 0) {
+        tileNumber -= 1;
+        int32_t sourceX = tileNumber % (_tileset.width() / 16);
+        int32_t sourceY = tileNumber / (_tileset.width() / 16);
+        _gfx->drawImage(_tileset, x, y, sourceX * 16, sourceY * 16, 16, 16, false);
+    }
 }

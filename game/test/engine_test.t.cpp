@@ -370,7 +370,7 @@ TEST_CASE("[Engine]") {
                         "          \"width\":1,"
                         "          \"height\":1,"
                         "          \"data\":["
-                        "              0"
+                        "              1"
                         "          ]"
                         "      },"
                         "      {"
@@ -378,7 +378,7 @@ TEST_CASE("[Engine]") {
                         "          \"width\":1,"
                         "          \"height\":1,"
                         "          \"data\":["
-                        "              11"
+                        "              12"
                         "          ]"
                         "      }"
                         "   ]"
@@ -392,5 +392,40 @@ TEST_CASE("[Engine]") {
         gameMap.layer(1).draw(20, 20);
 
         REQUIRE(mockGfx.drawnImage == "tilemap.xyz,20,20,16,16,16,16,0");
+    }
+
+    SECTION("Tiles of value 0 are not drawn") {
+        const std::string tilemap =
+                "{"
+                        "   \"width\":1,"
+                        "   \"height\":1,"
+                        "   \"layers\":["
+                        "      {"
+                        "          \"name\":\"Background\","
+                        "          \"width\":1,"
+                        "          \"height\":1,"
+                        "          \"data\":["
+                        "              0"
+                        "          ]"
+                        "      },"
+                        "      {"
+                        "          \"name\":\"Middleground\","
+                        "          \"width\":1,"
+                        "          \"height\":1,"
+                        "          \"data\":["
+                        "              0"
+                        "          ]"
+                        "      }"
+                        "   ]"
+                        "}";
+
+        auto gameMap = engine.createMap(tilemap, "tilemap.xyz");
+
+        gameMap.layer(0).draw(10, 10);
+
+        REQUIRE(mockGfx.drawnImage == "");
+        gameMap.layer(1).draw(20, 20);
+
+        REQUIRE(mockGfx.drawnImage == "");
     }
 }

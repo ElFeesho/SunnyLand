@@ -9,7 +9,6 @@
 #include "sfml/SFMLTime.h"
 
 #include <fstream>
-#include <algorithm>
 
 std::string loadMap(const std::string &tilemap) {
     std::string mapData;
@@ -32,7 +31,7 @@ public:
             _skip{_engine.createSprite("../Resources/fox-player-run.png", 33, 32)},
             _bg{_engine.createParallax("../Resources/island-background.png", 8.0f)},
             _mg{_engine.createParallax("../Resources/island-middleground.png", 4.0f)},
-            _map{_engine.createMap(loadMap("../Resources/first.json"), nullptr)}
+            _map{_engine.createMap(loadMap("../Resources/first.json"), "../Resources/forest-tileset.png")}
              {
     }
 
@@ -55,6 +54,10 @@ public:
         _mg.scroll(_bgSpeed, 0);
         _bg.draw();
         _mg.draw();
+
+        _map.layer(0).draw(0, 0);
+        _map.layer(1).draw(0, 0);
+
         _activeSprite->update(delta);
         _activeSprite->draw(100, 100, _facingLeft);
     }

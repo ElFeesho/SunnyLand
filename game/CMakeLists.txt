@@ -45,6 +45,8 @@ set(RESOURCES resources/spritesheets/player/climb.png
         resources/environment/layers/forest-middleground.png
         resources/environment/layers/island-background.png
         resources/environment/layers/island-middleground.png
+        resources/environment/layers/forest-tileset.png
+        resources/environment/layers/island-tileset.png
         resources/maps/first.json
         )
 add_executable(sunnyland
