@@ -41,13 +41,11 @@ public:
             if (action == SL::ActionType::Press) {
                 _activeSprite = &_skip;
                 _facingLeft = key == SL::KeyType::Left;
-                _bgSpeed = _facingLeft?1:-1;
 
                 _pxspeed = _facingLeft? -1.0:1.0;
             }
             else {
                 _activeSprite = &_idle;
-                _bgSpeed = 0;
                 _pxspeed = 0.0;
             }
         }
@@ -103,7 +101,6 @@ private:
     SL::Parallax _mg;
     SL::Tilemap _map;
     bool _facingLeft{false};
-    int32_t _bgSpeed{0};
 
     int32_t _px{100};
     int32_t _py{100};

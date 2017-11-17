@@ -21,8 +21,8 @@ void SFMLGfx::drawImage(SL::Image &image, int32_t x, int32_t y, int32_t sourceX,
     auto &texture = _loadedImages[image.filename()];
     sf::Sprite sprite{texture};
     sprite.setTextureRect(sf::IntRect{sourceX, sourceY, w, h});
-    sprite.setPosition(x + (horizontallyFlipped ? w : 0), y);
-    sprite.setScale(horizontallyFlipped ? -1.0f : 1.0f, 1.0f);
+    sprite.setPosition((x + (horizontallyFlipped ? w : 0))*2, y*2);
+    sprite.setScale(horizontallyFlipped ? -2.0f : 2.0f, 2.0f);
 
     _window.draw(sprite);
 }
