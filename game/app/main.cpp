@@ -9,19 +9,7 @@
 #include "sfml/SFMLTime.h"
 #include "sfml/SFMLSleeper.h"
 
-#include <fstream>
-
-std::string loadMap(const std::string &tilemap) {
-    std::string mapData;
-
-    std::fstream mapFile{tilemap, std::ios::in};
-
-    std::copy(std::istream_iterator<char>{mapFile}, std::istream_iterator<char>{}, std::back_inserter(mapData));
-
-    mapFile.close();
-
-    return mapData;
-}
+#include "fileio.h"
 
 
 class MainMenuScene : public SL::Scene {
@@ -32,7 +20,7 @@ public:
             _skip{_engine.createSprite("../Resources/fox-player-run.png", 33, 32)},
             _bg{_engine.createParallax("../Resources/island-background.png", 4.0f)},
             _mg{_engine.createParallax("../Resources/island-middleground.png", 2.0f)},
-            _map{_engine.createMap(loadMap("../Resources/first.json"), "../Resources/forest-tileset.png")}
+            _map{_engine.createMap(readFile("../Resources/first.json"), "../Resources/forest-tileset.png")}
              {
     }
 

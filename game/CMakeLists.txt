@@ -51,6 +51,8 @@ set(RESOURCES resources/spritesheets/player/climb.png
         )
 add_executable(sunnyland
         app/main.cpp
+        app/fileio.cpp
+        app/fileio.h
         app/sfml/SFMLGfx.cpp app/sfml/SFMLGfx.h
         app/sfml/SFMLInput.cpp app/sfml/SFMLInput.h
         app/sfml/SFMLTime.cpp app/sfml/SFMLTime.h
