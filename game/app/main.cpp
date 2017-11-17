@@ -7,6 +7,7 @@
 #include "sfml/SFMLGfx.h"
 #include "sfml/SFMLInput.h"
 #include "sfml/SFMLTime.h"
+#include "sfml/SFMLSleeper.h"
 
 #include <fstream>
 
@@ -73,18 +74,6 @@ private:
     int32_t _bgSpeed{0};
 };
 
-class SFMLSleeper : public SL::Sleeper {
-public:
-    void sleep(long currentTime) override {
-        if (currentTime-_lastTime < 1000/60) {
-            sf::sleep(sf::milliseconds((1000/60)-(currentTime-_lastTime)));
-        }
-        _lastTime = currentTime;
-    }
-
-private:
-    long _lastTime{0L};
-};
 
 
 int main(int argc, char **argv) {

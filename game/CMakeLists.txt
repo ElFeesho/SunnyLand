@@ -54,6 +54,7 @@ add_executable(sunnyland
         app/sfml/SFMLGfx.cpp app/sfml/SFMLGfx.h
         app/sfml/SFMLInput.cpp app/sfml/SFMLInput.h
         app/sfml/SFMLTime.cpp app/sfml/SFMLTime.h
+        app/sfml/SFMLSleeper.cpp app/sfml/SFMLSleeper.h
         ${RESOURCES})
 target_link_libraries(sunnyland PUBLIC engine ${SFML_LIBRARIES})
 
