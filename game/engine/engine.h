@@ -2,6 +2,7 @@
 #include <string>
 #include <functional>
 #include <vector>
+#include "json.hpp"
 
 namespace SL {
 
@@ -144,6 +145,7 @@ namespace SL {
         int32_t _cameraSpawnY;
     };
 
+
     class Engine {
     public:
         Engine(Gfx *gfx, Input *input, Time *time, Sleeper *sleeper);
@@ -167,6 +169,16 @@ namespace SL {
 
         bool _alive{true};
         long _lastTime{0L};
+    };
+
+    class JSONSpriteFactory {
+    public:
+        explicit JSONSpriteFactory(Engine &engine);
+
+        std::map<std::string, SL::Sprite> parse(const std::string &spritesJson);
+
+    private:
+        Engine &_engine;
     };
 }
 

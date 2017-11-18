@@ -1,0 +1,28 @@
+{
+  "sprites":[
+    {
+      "name":"idle",
+      "cw":37,
+      "ch":32,
+      "img":"../Resources/idle.png"
+    },
+    {
+      "name":"walk",
+      "cw":37,
+      "ch":32,
+      "img":"../Resources/skip.png"
+    },
+    {
+      "name":"jump",
+      "cw":37,
+      "ch":32,
+      "img":"../Resources/jump.png"
+    },
+    {
+      "name":"fall",
+      "cw":37,
+      "ch":32,
+      "img":"../Resources/fall.png"
+    }
+  ]
+}

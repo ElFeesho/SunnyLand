@@ -183,3 +183,18 @@ void SL::Tilemap::Layer::drawTile(uint32_t tileX, uint32_t tileY, int32_t x, int
         _gfx->drawImage(_tileset, x, y, sourceX * 16, sourceY * 16, 16, 16, false);
     }
 }
+
+SL::JSONSpriteFactory::JSONSpriteFactory(SL::Engine &engine) : _engine{engine} {}
+
+std::map<std::string, SL::Sprite> SL::JSONSpriteFactory::parse(const std::string &spritesJson) {
+    nlohmann::json spriteJson = nlohmann::json::parse(spritesJson);
+    std::map<std::string, SL::Sprite> result{};
+
+    for (auto &spriteObj : spriteJson["sprites"]) {
+        const std::string &spriteName = spriteObj["name"].get<std::string>();
+        const SL::Sprite &sprite = _engine.createSprite(spriteObj["img"].get<std::string>(), spriteObj["cw"].get<uint32_t>(), spriteObj["ch"].get<uint32_t>());
+        result.insert(std::pair<std::string, SL::Sprite>(spriteName, sprite));
+    }
+
+    return result;
+}

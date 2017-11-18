@@ -1,0 +1,28 @@
+{
+  "sprites":[
+    {
+      "name":"idle",
+      "cw":33,
+      "ch":32,
+      "img":"../Resources/fox-player-idle.png"
+    },
+    {
+      "name":"walk",
+      "cw":33,
+      "ch":32,
+      "img":"../Resources/fox-player-run.png"
+    },
+    {
+      "name":"jump",
+      "cw":33,
+      "ch":32,
+      "img":"../Resources/fox-player-jump.png"
+    },
+    {
+      "name":"fall",
+      "cw":33,
+      "ch":32,
+      "img":"../Resources/fox-player-fall.png"
+    }
+  ]
+}

@@ -49,7 +49,11 @@ set(RESOURCES resources/spritesheets/player/climb.png
         resources/environment/layers/island-tileset.png
         resources/maps/first.json
         )
+
+file(GLOB_RECURSE RES_SOURCES "resources/*")
+
 add_executable(sunnyland
+        MACOSX_BUNDLE
         app/main.cpp
         app/fileio.cpp
         app/fileio.h
@@ -57,19 +61,25 @@ add_executable(sunnyland
         app/sfml/SFMLInput.cpp app/sfml/SFMLInput.h
         app/sfml/SFMLTime.cpp app/sfml/SFMLTime.h
         app/sfml/SFMLSleeper.cpp app/sfml/SFMLSleeper.h
-        ${RESOURCES})
+        ${RES_SOURCES})
+
+set_source_files_properties(${RES_SOURCES} PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
+
 target_link_libraries(sunnyland PUBLIC engine ${SFML_LIBRARIES})
 
-set_target_properties(sunnyland PROPERTIES
-        MACOSX_BUNDLE TRUE
-        MACOSX_FRAMEWORK_IDENTIFIER org.cmake.ExecutableTarget
-        RESOURCE "${RESOURCES}")
+#set_target_properties(sunnyland PROPERTIES
+#        MACOSX_BUNDLE TRUE
+#        MACOSX_FRAMEWORK_IDENTIFIER org.cmake.ExecutableTarget
+#        RESOURCE "${RESOURCES}")
 
 #
 # Unit tests
 #
 
 enable_testing()
+
+add_library(mocks STATIC test/MockGfx.cpp test/MockInput.cpp test/MockScene.cpp test/MockSleeper.cpp test/MockTime.cpp)
+target_link_libraries(mocks PUBLIC engine)
 
 function(create_test_target target_name)
     set(OTHER_FILES "")
@@ -90,7 +100,7 @@ function(create_test_target target_name)
     add_test(${target_name} ${target_name})
     add_executable(${target_name} test/${target_name}.t.cpp ${OTHER_FILES})
     add_dependencies(${target_name} engine sunnyland)
-    target_link_libraries(${target_name} PRIVATE ${OTHER_LIBS})
+    target_link_libraries(${target_name} PRIVATE ${OTHER_LIBS} mocks)
     set_source_files_properties(test/${target_name}.t.cpp PROPERTIES COMPILE_FLAGS "-DCATCH_CONFIG_MAIN -include ${CMAKE_CURRENT_SOURCE_DIR}/test/catch.h")
 endfunction()
 

@@ -20,7 +20,7 @@ public:
         Fall
     };
 
-    Player(SL::Engine &engine);
+    Player(std::map<std::string, SL::Sprite> &&spriteSet);
 
     void draw(long delta, int x, int y);
 
@@ -47,11 +47,11 @@ private:
     State _state{State::Idle};
 };
 
-Player::Player(SL::Engine &engine) :
-        _idle{engine.createSprite("../Resources/idle.png", 37, 32)},
-        _walk{engine.createSprite("../Resources/skip.png", 37, 32)},
-        _jump{engine.createSprite("../Resources/jump.png", 37, 32)},
-        _fall{engine.createSprite("../Resources/fall.png", 37, 32)} {
+Player::Player(std::map<std::string, SL::Sprite> &&spriteSet) :
+        _idle{spriteSet.at("idle")},
+        _walk{spriteSet.at("walk")},
+        _jump{spriteSet.at("jump")},
+        _fall{spriteSet.at("fall")} {
 
 }
 
@@ -101,7 +101,7 @@ public:
             _bg{_engine.createParallax("../Resources/island-background.png", 6.0f)},
             _mg{_engine.createParallax("../Resources/island-middleground.png", 1.0f)},
             _map{_engine.createMap(readFile("../Resources/first.json"), "../Resources/forest-tileset.png")},
-            _player{engine} {
+            _player{SL::JSONSpriteFactory{engine}.parse(readFile("../Resources/rabbit.json"))} {
         _camX = _map.cameraSpawnX();
         _camY = _map.cameraSpawnY() - 100;
 
