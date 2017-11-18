@@ -32,8 +32,40 @@
          "width":50,
          "x":0,
          "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "name":"Objects",
+         "objects":[
+                {
+                 "height":32,
+                 "id":1,
+                 "name":"",
+                 "rotation":0,
+                 "type":"player_spawn",
+                 "visible":true,
+                 "width":32,
+                 "x":64,
+                 "y":496
+                }, 
+                {
+                 "height":32,
+                 "id":3,
+                 "name":"",
+                 "rotation":0,
+                 "type":"camera_spawn",
+                 "visible":true,
+                 "width":32,
+                 "x":64,
+                 "y":396
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
         }],
- "nextobjectid":1,
+ "nextobjectid":4,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.0.3",

@@ -428,4 +428,86 @@ TEST_CASE("[Engine]") {
 
         REQUIRE(mockGfx.drawnImage == "");
     }
+
+    SECTION("Player spawn can be read") {
+        const std::string tilemap =
+                "{"
+                        "   \"width\":1,"
+                        "   \"height\":1,"
+                        "   \"layers\":["
+                        "      {"
+                        "          \"name\":\"Background\","
+                        "          \"width\":1,"
+                        "          \"height\":1,"
+                        "          \"data\":["
+                        "              0"
+                        "          ]"
+                        "      },"
+                        "      {"
+                        "          \"name\":\"Middleground\","
+                        "          \"width\":1,"
+                        "          \"height\":1,"
+                        "          \"data\":["
+                        "              0"
+                        "          ]"
+                        "      },"
+                        "      {"
+                        "          \"type\":\"objectgroup\","
+                        "          \"objects\":["
+                        "               {"
+                        "                   \"type\":\"player_spawn\","
+                        "                   \"x\":123,"
+                        "                   \"y\":345"
+                        "               }"
+                        "           ]"
+                        "       }"
+                        "   ]"
+                        "}";
+
+        auto gameMap = engine.createMap(tilemap, "tilemap.xyz");
+
+        REQUIRE(gameMap.playerSpawnX() == 123);
+        REQUIRE(gameMap.playerSpawnY() == 345);
+    }
+
+    SECTION("Camera spawn can be read") {
+        const std::string tilemap =
+                "{"
+                        "   \"width\":1,"
+                        "   \"height\":1,"
+                        "   \"layers\":["
+                        "      {"
+                        "          \"name\":\"Background\","
+                        "          \"width\":1,"
+                        "          \"height\":1,"
+                        "          \"data\":["
+                        "              0"
+                        "          ]"
+                        "      },"
+                        "      {"
+                        "          \"name\":\"Middleground\","
+                        "          \"width\":1,"
+                        "          \"height\":1,"
+                        "          \"data\":["
+                        "              0"
+                        "          ]"
+                        "      },"
+                        "      {"
+                        "          \"type\":\"objectgroup\","
+                        "          \"objects\":["
+                        "               {"
+                        "                   \"type\":\"camera_spawn\","
+                        "                   \"x\":123,"
+                        "                   \"y\":345"
+                        "               }"
+                        "           ]"
+                        "       }"
+                        "   ]"
+                        "}";
+
+        auto gameMap = engine.createMap(tilemap, "tilemap.xyz");
+
+        REQUIRE(gameMap.cameraSpawnX() == 123);
+        REQUIRE(gameMap.cameraSpawnY() == 345);
+    }
 }

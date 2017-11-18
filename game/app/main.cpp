@@ -11,97 +11,194 @@
 
 #include "fileio.h"
 
+class Player {
+public:
+    enum class State {
+        Idle,
+        Walk,
+        Jump,
+        Fall
+    };
+
+    Player(SL::Engine &engine);
+
+    void draw(long delta, int x, int y);
+
+    void lookLeft();
+
+    void lookRight();
+
+    void walk();
+
+    void jump();
+
+    void idle();
+
+    void fall();
+
+private:
+    SL::Sprite _idle;
+    SL::Sprite _walk;
+    SL::Sprite _jump;
+    SL::Sprite _fall;
+
+    bool _right{true};
+
+    State _state{State::Idle};
+};
+
+Player::Player(SL::Engine &engine) :
+        _idle{engine.createSprite("../Resources/idle.png", 37, 32)},
+        _walk{engine.createSprite("../Resources/skip.png", 37, 32)},
+        _jump{engine.createSprite("../Resources/jump.png", 37, 32)},
+        _fall{engine.createSprite("../Resources/fall.png", 37, 32)} {
+
+}
+
+void Player::draw(long delta, int x, int y) {
+    SL::Sprite *sprite = &_idle;
+
+    if (_state == State::Walk) {
+        sprite = &_walk;
+    } else if (_state == State::Jump) {
+        sprite = &_jump;
+    } else if (_state == State::Fall) {
+        sprite = &_fall;
+    }
+
+    sprite->update(delta);
+    sprite->draw(x, y, !_right);
+}
+
+void Player::lookLeft() {
+    _right = false;
+}
+
+void Player::lookRight() {
+    _right = true;
+}
+
+void Player::walk() {
+    _state = State::Walk;
+}
+
+void Player::jump() {
+    _state = State::Jump;
+}
+
+void Player::idle() {
+    _state = State::Idle;
+}
+
+void Player::fall() {
+    _state = State::Fall;
+}
 
 class MainMenuScene : public SL::Scene {
 public:
     explicit MainMenuScene(SL::Engine &engine) :
             _engine{engine},
-            _idle{_engine.createSprite("../Resources/fox-player-idle.png", 33, 32)},
-            _skip{_engine.createSprite("../Resources/fox-player-run.png", 33, 32)},
-            _bg{_engine.createParallax("../Resources/island-background.png", 4.0f)},
-            _mg{_engine.createParallax("../Resources/island-middleground.png", 2.0f)},
-            _map{_engine.createMap(readFile("../Resources/first.json"), "../Resources/forest-tileset.png")}
-             {
+            _bg{_engine.createParallax("../Resources/island-background.png", 6.0f)},
+            _mg{_engine.createParallax("../Resources/island-middleground.png", 1.0f)},
+            _map{_engine.createMap(readFile("../Resources/first.json"), "../Resources/forest-tileset.png")},
+            _player{engine} {
+        _camX = _map.cameraSpawnX();
+        _camY = _map.cameraSpawnY() - 100;
+
+        _camTargetX = _map.playerSpawnX();
+        _camTargetY = _map.playerSpawnY() - 100;
+
+        _playerX = _map.playerSpawnX();
+        _playerY = _map.playerSpawnY();
     }
 
     void keyEvent(SL::KeyType key, SL::ActionType action) override {
-        if (key == SL::KeyType::Right || key == SL::KeyType::Left) {
-            if (action == SL::ActionType::Press) {
-                _activeSprite = &_skip;
-                _facingLeft = key == SL::KeyType::Left;
-
-                _pxspeed = _facingLeft? -1.0:1.0;
+        if (action == SL::ActionType::Press) {
+            if (key == SL::KeyType::Right) {
+                _player.walk();
+                _player.lookRight();
+                _playerXSpeed = 2;
+            } else if (key == SL::KeyType::Left) {
+                _player.walk();
+                _player.lookLeft();
+                _playerXSpeed = -2;
+            } else if (key == SL::KeyType::Jump) {
+                _playerYSpeed = -5.0;
+                _player.jump();
             }
-            else {
-                _activeSprite = &_idle;
-                _pxspeed = 0.0;
+        } else {
+            if (key == SL::KeyType::Right || key == SL::KeyType::Left) {
+                _player.idle();
+                _playerXSpeed = 0;
             }
-        }
-
-        if (key == SL::KeyType::Jump && action == SL::ActionType::Press && _pyspeed == 0.0) {
-            _pyspeed = -5.0;
         }
     }
 
     void update(long delta) override {
-        _bg.scroll(-_px, 0);
-        _mg.scroll(-_px, 0);
+        _bg.scroll(static_cast<int32_t>(-_camX), static_cast<int32_t>(-_camY));
+        _mg.scroll(static_cast<int32_t>(-_camX), static_cast<int32_t>(-_camY));
         _bg.draw();
         _mg.draw();
 
-        _map.layer(0).draw(0, 0);
-        _map.layer(1).draw(0, 0);
+        _map.layer(0).draw(static_cast<int32_t>(-_camX), static_cast<int32_t>(-_camY));
+        _map.layer(1).draw(static_cast<int32_t>(-_camX), static_cast<int32_t>(-_camY));
 
-        _activeSprite->update(delta);
-        _activeSprite->draw(_px, _py-32, _facingLeft);
+        _playerX += _playerXSpeed;
+        _playerY += _playerYSpeed;
 
-        if (_pyspeed < 3.0) {
-            _pyspeed += 0.1;
+        _playerYSpeed += 0.1;
+        if (_playerYSpeed > 0.2) {
+            _player.fall();
         }
 
-        _py += _pyspeed;
-        _px += _pxspeed;
+        if (_playerY > _map.playerSpawnY()) {
+            _playerY = _map.playerSpawnY();
 
-        if (_map.layer(2).tile((_px+9)/16, (_py)/16)!=0 || _map.layer(2).tile((_px+23)/16, (_py)/16)!=0) {
-            _py = (_py/16)*16;
-            _pyspeed = 0.0;
+            if (_playerXSpeed == 0) {
+                _player.idle();
+            } else {
+                _player.walk();
+            }
+
+            _playerYSpeed = 0;
         }
 
-        if (_map.layer(2).tile((_px+9)/16, (_py-24)/16)!=0 || _map.layer(2).tile((_px+23)/16, (_py-24)/16)!=0) {
-            _pyspeed = 1.0;
-        }
+        _camTargetX = _playerX - 100;
+        _camTargetY = _playerY - 100;
+        _player.draw(delta, static_cast<int>(_playerX - _camX), static_cast<int>(_playerY - _camY));
 
-
-        if (_map.layer(2).tile((_px+8)/16, (_py-1)/16)!=0 || _map.layer(2).tile((_px+8)/16, (_py-23)/16)!=0) {
-            _px = (_px/16)*16 + 8;
-        }
-        if (_map.layer(2).tile((_px+24)/16, (_py-1)/16)!=0 || _map.layer(2).tile((_px+24)/16, (_py-23)/16)!=0) {
-            _px = ((_px+24)/16)*16 - 24;
-        }
+        _camX += (_camTargetX - _camX) / 8.0;
+        _camY += (_camTargetY - _camY) / 8.0;
 
     }
+
 private:
+
     SL::Engine &_engine;
-    SL::Sprite _idle;
-    SL::Sprite _skip;
-    SL::Sprite *_activeSprite{&_idle};
     SL::Parallax _bg;
     SL::Parallax _mg;
     SL::Tilemap _map;
-    bool _facingLeft{false};
+    Player _player;
 
-    int32_t _px{100};
-    int32_t _py{100};
+    double _playerX;
+    double _playerY;
 
-    double _pxspeed{0.0};
-    double _pyspeed{1.0};
+    double _playerXSpeed{0};
+    double _playerYSpeed{0};
+
+    double _camX{0};
+    double _camY{0};
+
+    double _camTargetX{0};
+    double _camTargetY{0};
 };
-
 
 
 int main(int argc, char **argv) {
     sf::RenderWindow window{{800, 600}, "SunnyLand"};
-
+    window.setKeyRepeatEnabled(false);
+    window.setFramerateLimit(60);
+    window.setVerticalSyncEnabled(true);
     SFMLGfx gfx{window};
     SFMLInput input{window};
     SFMLTime time{};

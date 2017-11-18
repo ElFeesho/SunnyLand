@@ -81,15 +81,34 @@ SL::Tilemap SL::Engine::createMap(const std::string mapData, const std::string t
     auto mapJson = nlohmann::json::parse(mapData);
     auto layers = mapJson["layers"];
 
+    int32_t playerSpawnX = 0;
+    int32_t playerSpawnY = 0;
+    int32_t cameraSpawnX = 0;
+    int32_t cameraSpawnY = 0;
+
+
     SL::Image tileset = _gfx->loadImage(tilesetImage);
 
     std::vector<SL::Tilemap::Layer> tilemapLayers;
 
     for (auto &layer : layers) {
-        tilemapLayers.emplace_back(_gfx, tileset, layer["width"].get<uint32_t>(), layer["height"].get<uint32_t>(), layer["data"].get<std::vector<uint32_t>>());
+        if (layer.find("type") != layer.end() && layer["type"].get<std::string>() == "objectgroup") {
+            for (auto &object : layer["objects"]) {
+                if (object["type"].get<std::string>() == "player_spawn") {
+                    playerSpawnX = object["x"].get<int32_t>();
+                    playerSpawnY = object["y"].get<int32_t>();
+                }
+                else {
+                    cameraSpawnX = object["x"].get<int32_t>();
+                    cameraSpawnY = object["y"].get<int32_t>();
+                }
+            }
+        } else {
+            tilemapLayers.emplace_back(_gfx, tileset, layer["width"].get<uint32_t>(), layer["height"].get<uint32_t>(), layer["data"].get<std::vector<uint32_t>>());
+        }
     }
 
-    return SL::Tilemap(mapJson["width"].get<uint32_t>(), mapJson["height"].get<uint32_t>(), tilemapLayers);
+    return SL::Tilemap(mapJson["width"].get<uint32_t>(), mapJson["height"].get<uint32_t>(), tilemapLayers, playerSpawnX, playerSpawnY, cameraSpawnX, cameraSpawnY);
 }
 
 SL::Parallax::Parallax(SL::Gfx *gfx, SL::Image image, float travelFactor) : _gfx{gfx}, _image{image}, _travelFactor{travelFactor} {
@@ -105,7 +124,8 @@ void SL::Parallax::scroll(int32_t scrollX, int32_t scrollY) {
     _y = scrollY;
 }
 
-SL::Tilemap::Tilemap(uint32_t width, uint32_t height, std::vector<SL::Tilemap::Layer> layers) : _w{width}, _h{height}, _layers{layers} {
+SL::Tilemap::Tilemap(uint32_t width, uint32_t height, std::vector<Layer> layers, int32_t playerSpawnX, int32_t playerSpawnY, int32_t cameraSpawnX, int32_t cameraSpawnY)
+        : _w{width}, _h{height}, _layers{layers}, _playerSpawnX{playerSpawnX}, _playerSpawnY{playerSpawnY}, _cameraSpawnX{cameraSpawnX}, _cameraSpawnY{cameraSpawnY} {
 
 }
 
@@ -119,6 +139,22 @@ uint32_t SL::Tilemap::width() {
 
 uint32_t SL::Tilemap::height() {
     return _h;
+}
+
+int32_t SL::Tilemap::playerSpawnX() {
+    return _playerSpawnX;
+}
+
+int32_t SL::Tilemap::playerSpawnY() {
+    return _playerSpawnY;
+}
+
+int32_t SL::Tilemap::cameraSpawnX() {
+    return _cameraSpawnX;
+}
+
+int32_t SL::Tilemap::cameraSpawnY() {
+    return _cameraSpawnY;
 }
 
 SL::Tilemap::Layer::Layer(Gfx *gfx, Image tileset, uint32_t width, uint32_t height, std::vector<uint32_t> tiles) : _gfx{gfx}, _tileset{tileset}, _w{width}, _h{height}, _tiles{tiles} {
