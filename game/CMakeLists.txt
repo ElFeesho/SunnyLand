@@ -55,6 +55,8 @@ file(GLOB_RECURSE RES_SOURCES "resources/*")
 add_executable(sunnyland
         MACOSX_BUNDLE
         app/main.cpp
+        app/Camera.cpp
+        app/LevelBackground.cpp
         app/fileio.cpp
         app/fileio.h
         app/sfml/SFMLGfx.cpp app/sfml/SFMLGfx.h

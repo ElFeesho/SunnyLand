@@ -11,6 +11,15 @@
 
 #include "fileio.h"
 
+#include "Camera.h"
+#include "LevelBackground.h"
+
+class PlayerPhysics {
+public:
+private:
+
+};
+
 class Player {
 public:
     enum class State {
@@ -20,7 +29,7 @@ public:
         Fall
     };
 
-    Player(std::map<std::string, SL::Sprite> &&spriteSet);
+    explicit Player(std::map<std::string, SL::Sprite> &&spriteSet);
 
     void draw(long delta, int x, int y);
 
@@ -94,60 +103,16 @@ void Player::fall() {
     _state = State::Fall;
 }
 
-class Camera {
-public:
-
-    void position(double x, double y);
-
-    void target(double x, double y);
-
-    void pan();
-
-    int32_t x();
-    int32_t y();
-
-private:
-    double _camX{0};
-    double _camY{0};
-
-    double _camTargetX{0};
-    double _camTargetY{0};
-};
-
-void Camera::position(double x, double y) {
-    _camX = x;
-    _camY = y;
-}
-
-void Camera::target(double x, double y) {
-    _camTargetX = x;
-    _camTargetY = y;
-}
-
-void Camera::pan() {
-    _camX += (_camTargetX - _camX) / 8.0;
-    _camY += (_camTargetY - _camY) / 8.0;
-}
-
-int32_t Camera::x() {
-    return static_cast<int32_t>(_camX);
-}
-
-int32_t Camera::y() {
-    return static_cast<int32_t>(_camY);
-}
-
 class MainMenuScene : public SL::Scene {
 public:
     explicit MainMenuScene(SL::Engine &engine) :
             _engine{engine},
-            _bg{_engine.createParallax("../Resources/island-background.png", 6.0f)},
-            _mg{_engine.createParallax("../Resources/island-middleground.png", 1.0f)},
+            _bg{engine},
             _map{_engine.createMap(readFile("../Resources/first.json"), "../Resources/forest-tileset.png")},
-            _player{SL::JSONSpriteFactory{engine}.parse(readFile("../Resources/rabbit.json"))} {
+            _player{SL::JSONSpriteFactory{engine}.parse(readFile("../Resources/fox.json"))} {
 
         _camera.position(_map.cameraSpawnX(), _map.cameraSpawnY());
-        _camera.target(_map.playerSpawnX(), _map.playerSpawnY()-100);
+        _camera.target(_map.playerSpawnX(), _map.playerSpawnY() - 100);
 
         _playerX = _map.playerSpawnX();
         _playerY = _map.playerSpawnY();
@@ -184,10 +149,8 @@ public:
     }
 
     void update(long delta) override {
-        _bg.scroll(static_cast<int32_t>(-_camera.x()), static_cast<int32_t>(-_camera.y()));
-        _mg.scroll(static_cast<int32_t>(-_camera.x()), static_cast<int32_t>(-_camera.y()));
+        _bg.scroll(-_camera.x(), -_camera.y());
         _bg.draw();
-        _mg.draw();
 
         _map.layer(0).draw(static_cast<int32_t>(-_camera.x()), static_cast<int32_t>(-_camera.y()));
         _map.layer(1).draw(static_cast<int32_t>(-_camera.x()), static_cast<int32_t>(-_camera.y()));
@@ -223,8 +186,7 @@ public:
 private:
 
     SL::Engine &_engine;
-    SL::Parallax _bg;
-    SL::Parallax _mg;
+    LevelBackground _bg;
     SL::Tilemap _map;
     Player _player;
 
