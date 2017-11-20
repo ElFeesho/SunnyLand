@@ -23,6 +23,12 @@
       "cw":33,
       "ch":32,
       "img":"../Resources/fox-player-fall.png"
+    },
+    {
+      "name":"duck",
+      "cw":33,
+      "ch":32,
+      "img":"../Resources/fox-player-duck.png"
     }
   ]
 }

@@ -16,9 +16,116 @@
 
 class PlayerPhysics {
 public:
-private:
 
+    void right();
+
+    void left();
+
+    void jump();
+
+    void idle();
+
+    void hitCeiling();
+
+    void hitRightWall();
+
+    void hitLeftWall();
+
+    void hitFloor();
+
+    void update(double &x, double &y);
+
+    double xSpeed();
+
+    double ySpeed();
+
+    bool onFloor();
+
+    void duck();
+
+    bool isDucking();
+
+private:
+    double _xSpeed{0};
+    double _ySpeed{0};
+
+    bool _onFloor{true};
+    double _xSpeedAccel{0.0};
+    bool _ducking{false};
 };
+
+void PlayerPhysics::right() {
+    _xSpeed = 1;
+    _xSpeedAccel = 1.1;
+}
+
+void PlayerPhysics::left() {
+    _xSpeed = -1;
+    _xSpeedAccel = 1.1;
+}
+
+void PlayerPhysics::jump() {
+    if (_onFloor) {
+        _ySpeed = -5.0;
+        _onFloor = false;
+    }
+}
+
+void PlayerPhysics::hitCeiling() {
+    _ySpeed *= -1;
+}
+
+void PlayerPhysics::hitRightWall() {
+    _xSpeed = 0;
+}
+
+void PlayerPhysics::hitLeftWall() {
+    _xSpeed = 0;
+}
+
+void PlayerPhysics::hitFloor() {
+    _onFloor = true;
+    _ySpeed = 0.0;
+}
+
+void PlayerPhysics::update(double &x, double &y) {
+    x += _xSpeed;
+    y += _ySpeed;
+
+    _ySpeed += 0.1;
+    _xSpeed *= _xSpeedAccel;
+
+    _xSpeed = std::max(std::min(_xSpeed, 3.0), -3.0);
+
+    if (std::abs(_xSpeed) <= 0.1) {
+        _xSpeed = 0;
+    }
+}
+
+double PlayerPhysics::xSpeed() {
+    return _xSpeed;
+}
+
+double PlayerPhysics::ySpeed() {
+    return _ySpeed;
+}
+
+bool PlayerPhysics::onFloor() {
+    return _onFloor;
+}
+
+void PlayerPhysics::idle() {
+    _xSpeedAccel = 0.8;
+    _ducking = false;
+}
+
+void PlayerPhysics::duck() {
+    _ducking = true;
+}
+
+bool PlayerPhysics::isDucking() {
+    return _ducking;
+}
 
 class Player {
 public:
@@ -26,7 +133,8 @@ public:
         Idle,
         Walk,
         Jump,
-        Fall
+        Fall,
+        Duck
     };
 
     explicit Player(std::map<std::string, SL::Sprite> &&spriteSet);
@@ -45,11 +153,14 @@ public:
 
     void fall();
 
+    void duck();
+
 private:
     SL::Sprite _idle;
     SL::Sprite _walk;
     SL::Sprite _jump;
     SL::Sprite _fall;
+    SL::Sprite _duck;
 
     bool _right{true};
 
@@ -60,7 +171,8 @@ Player::Player(std::map<std::string, SL::Sprite> &&spriteSet) :
         _idle{spriteSet.at("idle")},
         _walk{spriteSet.at("walk")},
         _jump{spriteSet.at("jump")},
-        _fall{spriteSet.at("fall")} {
+        _fall{spriteSet.at("fall")},
+        _duck{spriteSet.at("duck")} {
 
 }
 
@@ -73,6 +185,8 @@ void Player::draw(long delta, int x, int y) {
         sprite = &_jump;
     } else if (_state == State::Fall) {
         sprite = &_fall;
+    } else if (_state == State::Duck) {
+        sprite = &_duck;
     }
 
     sprite->update(delta);
@@ -103,6 +217,10 @@ void Player::fall() {
     _state = State::Fall;
 }
 
+void Player::duck() {
+    _state = State::Duck;
+}
+
 class MainMenuScene : public SL::Scene {
 public:
     explicit MainMenuScene(SL::Engine &engine) :
@@ -121,29 +239,35 @@ public:
     void keyEvent(SL::KeyType key, SL::ActionType action) override {
         if (action == SL::ActionType::Press) {
             if (key == SL::KeyType::Right) {
-                if (_playerYSpeed > -0.1 && _playerYSpeed < 0.1) {
+                if (_playerPhysics.onFloor()) {
                     _player.walk();
                     _player.lookRight();
                 }
-                _playerXSpeed = 2;
+
+                _playerPhysics.right();
+
             } else if (key == SL::KeyType::Left) {
-                if (_playerYSpeed > -0.1 && _playerYSpeed < 0.1) {
+                if (_playerPhysics.onFloor()) {
                     _player.walk();
                     _player.lookLeft();
                 }
-                _playerXSpeed = -2;
+
+                _playerPhysics.left();
             } else if (key == SL::KeyType::Jump) {
-                if (_playerYSpeed > -0.1 && _playerYSpeed < 0.1) {
-                    _playerYSpeed = -5.0;
-                    _player.jump();
-                }
+                _playerPhysics.jump();
+            } else if (key == SL::KeyType::Down) {
+                _playerPhysics.duck();
+                _player.duck();
             }
         } else {
             if (key == SL::KeyType::Right || key == SL::KeyType::Left) {
-                if (_playerYSpeed > -0.1 && _playerYSpeed < 0.1) {
+                _playerPhysics.idle();
+                if (_playerPhysics.onFloor()) {
                     _player.idle();
                 }
-                _playerXSpeed = 0;
+            } else if (key == SL::KeyType::Down) {
+                _player.idle();
+                _playerPhysics.idle();
             }
         }
     }
@@ -155,24 +279,28 @@ public:
         _map.layer(0).draw(static_cast<int32_t>(-_camera.x()), static_cast<int32_t>(-_camera.y()));
         _map.layer(1).draw(static_cast<int32_t>(-_camera.x()), static_cast<int32_t>(-_camera.y()));
 
-        _playerX += _playerXSpeed;
-        _playerY += _playerYSpeed;
+        _playerPhysics.update(_playerX, _playerY);
 
-        _playerYSpeed += 0.1;
-        if (_playerYSpeed > 0.2) {
+        if (_playerPhysics.ySpeed() > 0.2) {
             _player.fall();
+        } else if (_playerPhysics.ySpeed() < 0.2) {
+            _player.jump();
         }
 
-        if (_playerY > _map.playerSpawnY()) {
+        if (_playerY >= _map.playerSpawnY()) {
             _playerY = _map.playerSpawnY();
 
-            if (_playerXSpeed == 0) {
-                _player.idle();
+            _playerPhysics.hitFloor();
+
+            if (_playerPhysics.xSpeed() == 0.0) {
+                if (_playerPhysics.isDucking()) {
+                    _player.duck();
+                } else {
+                    _player.idle();
+                }
             } else {
                 _player.walk();
             }
-
-            _playerYSpeed = 0;
         }
 
         _camera.target(_playerX - 100, _playerY - 100);
@@ -193,8 +321,7 @@ private:
     double _playerX;
     double _playerY;
 
-    double _playerXSpeed{0};
-    double _playerYSpeed{0};
+    PlayerPhysics _playerPhysics{};
 
     Camera _camera{};
 };
