@@ -72,7 +72,7 @@ void PlayerPhysics::jump() {
 }
 
 void PlayerPhysics::hitCeiling() {
-    _ySpeed *= -1;
+    _ySpeed *= -0.8;
 }
 
 void PlayerPhysics::hitRightWall() {
@@ -287,24 +287,47 @@ public:
             _player.jump();
         }
 
-        if (_map.checkCollisionDown(_playerX, _playerY, _playerPhysics.ySpeed()) || _map.checkCollisionDown(_playerX+32, _playerY, _playerPhysics.ySpeed())) {
+        if (_playerPhysics.ySpeed() > 0) {
+            double playerYOffset = _playerY + 32;
 
-            _playerPhysics.hitFloor();
+            if (_map.checkCollisionDown(_playerX + 2, playerYOffset, _playerPhysics.ySpeed()) || _map.checkCollisionDown(_playerX + 30, playerYOffset, _playerPhysics.ySpeed())) {
 
-            if (_playerPhysics.xSpeed() == 0.0) {
-                if (_playerPhysics.isDucking()) {
-                    _player.duck();
+                _playerY = playerYOffset - 32;
+                _playerPhysics.hitFloor();
+
+                if (_playerPhysics.xSpeed() == 0.0) {
+                    if (_playerPhysics.isDucking()) {
+                        _player.duck();
+                    } else {
+                        _player.idle();
+                    }
                 } else {
-                    _player.idle();
+                    _player.walk();
                 }
-            } else {
-                _player.walk();
+            }
+        }
+
+        if (_playerPhysics.ySpeed() < 0) {
+            if (_map.checkCollisionUp(_playerX + 2, _playerY, _playerPhysics.ySpeed()) || _map.checkCollisionUp(_playerX + 30, _playerY, _playerPhysics.ySpeed())) {
+                _playerPhysics.hitCeiling();
+            }
+        }
+
+        if (_playerPhysics.xSpeed() < 0) {
+            if (_map.checkCollisionLeft(_playerX, _playerY+2, _playerPhysics.xSpeed()) || _map.checkCollisionLeft(_playerX, _playerY+30, _playerPhysics.xSpeed())) {
+                _playerPhysics.hitLeftWall();
+            }
+        } else if (_playerPhysics.xSpeed() > 0) {
+            double playerXOffset = _playerX+32;
+            if (_map.checkCollisionRight(playerXOffset, _playerY+2, _playerPhysics.xSpeed()) || _map.checkCollisionLeft(playerXOffset, _playerY+30, _playerPhysics.xSpeed())) {
+                _playerX = playerXOffset-32;
+                _playerPhysics.hitRightWall();
             }
         }
 
         _camera.target(_playerX - 100, _playerY - 100);
 
-        _player.draw(delta, static_cast<int>(_playerX - _camera.x()), static_cast<int>(_playerY - _camera.y()-32));
+        _player.draw(delta, static_cast<int>(_playerX - _camera.x()), static_cast<int>(_playerY - _camera.y()));
 
         _camera.pan();
     }

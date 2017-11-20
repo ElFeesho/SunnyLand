@@ -139,6 +139,12 @@ namespace SL {
 
         bool checkCollisionDown(double x, double &y, double travelSpeed);
 
+        bool checkCollisionRight(double &x, double y, double travelSpeed);
+
+        bool checkCollisionLeft(double &x, double y, double travelSpeed);
+
+        bool checkCollisionUp(double x, double &y, double travelSpeed);
+
     private:
         std::vector<Layer> _layers;
         uint32_t _w;

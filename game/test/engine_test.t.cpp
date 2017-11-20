@@ -528,6 +528,272 @@ TEST_CASE("[Engine]") {
 
         REQUIRE(y == 48.0);
         REQUIRE(collides);
+    }
 
+    SECTION("Can detect collision with right wall") {
+
+        const std::string &collisionMap = R"(
+{
+  "layers": [
+    {
+      "data": [
+        0,0,0,0,
+        71,0,0,68,
+        91,0,0,88,
+        68,69,70,71
+      ],
+      "height": 4,
+      "name": "Background",
+      "type": "tilelayer",
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        0,0,0,0,
+        0,0,0,0,
+        0,49,50,0,
+        0,0,0,0
+      ],
+      "height": 4,
+      "name": "Middleground",
+      "type": "tilelayer",
+      "visible": true,
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        0,0,0,0,
+        71,0,0,68,
+        91,0,0,88,
+        68,69,70,71
+      ],
+      "height": 4,
+      "name": "Collision",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "objects": [
+        {
+          "type": "player_spawn",
+          "x": 16,
+          "y": -32
+        },
+        {
+          "type": "camera_spawn",
+          "x": 16,
+          "y": -32
+        }
+      ],
+      "type": "objectgroup"
+    }
+  ],
+  "nextobjectid": 4,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.0.3",
+  "tileheight": 16,
+   "properties": {
+        "background": "bg.xyz",
+        "middleground": "mg.xyz"
+   },
+  "width": 4,
+  "height": 4
+}
+)";
+        auto tileMap = engine.createMap(collisionMap, "tilemap.xyz");
+
+        double x = 45;
+        double y = 32;
+        bool collides = tileMap.checkCollisionRight(x, y, 5);
+
+        REQUIRE(x == 48.0);
+        REQUIRE(collides);
+    }
+
+    SECTION("Can detect collision with left wall") {
+
+        const std::string &collisionMap = R"(
+{
+  "layers": [
+    {
+      "data": [
+        0,0,0,0,
+        71,0,0,68,
+        91,0,0,88,
+        68,69,70,71
+      ],
+      "height": 4,
+      "name": "Background",
+      "type": "tilelayer",
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        0,0,0,0,
+        0,0,0,0,
+        0,49,50,0,
+        0,0,0,0
+      ],
+      "height": 4,
+      "name": "Middleground",
+      "type": "tilelayer",
+      "visible": true,
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        0,0,0,0,
+        71,0,0,68,
+        91,0,0,88,
+        68,69,70,71
+      ],
+      "height": 4,
+      "name": "Collision",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "objects": [
+        {
+          "type": "player_spawn",
+          "x": 16,
+          "y": -32
+        },
+        {
+          "type": "camera_spawn",
+          "x": 16,
+          "y": -32
+        }
+      ],
+      "type": "objectgroup"
+    }
+  ],
+  "nextobjectid": 4,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.0.3",
+  "tileheight": 16,
+   "properties": {
+        "background": "bg.xyz",
+        "middleground": "mg.xyz"
+   },
+  "width": 4,
+  "height": 4
+}
+)";
+        auto tileMap = engine.createMap(collisionMap, "tilemap.xyz");
+
+        double x = 20;
+        double y = 32;
+        bool collides = tileMap.checkCollisionLeft(x, y, -5);
+
+        REQUIRE(x == 16);
+        REQUIRE(collides);
+    }
+
+    SECTION("Can detect collision with floor") {
+
+        const std::string &collisionMap = R"(
+{
+  "layers": [
+    {
+      "data": [
+        0,0,0,0,
+        71,0,0,68,
+        91,0,0,88,
+        68,69,70,71
+      ],
+      "height": 4,
+      "name": "Background",
+      "type": "tilelayer",
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        0,0,0,0,
+        0,0,0,0,
+        0,49,50,0,
+        0,0,0,0
+      ],
+      "height": 4,
+      "name": "Middleground",
+      "type": "tilelayer",
+      "visible": true,
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        0,0,0,0,
+        71,0,0,68,
+        91,0,0,88,
+        68,69,70,71
+      ],
+      "height": 4,
+      "name": "Collision",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "objects": [
+        {
+          "type": "player_spawn",
+          "x": 16,
+          "y": -32
+        },
+        {
+          "type": "camera_spawn",
+          "x": 16,
+          "y": -32
+        }
+      ],
+      "type": "objectgroup"
+    }
+  ],
+  "nextobjectid": 4,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.0.3",
+  "tileheight": 16,
+   "properties": {
+        "background": "bg.xyz",
+        "middleground": "mg.xyz"
+   },
+  "width": 4,
+  "height": 4
+}
+)";
+        auto tileMap = engine.createMap(collisionMap, "tilemap.xyz");
+
+        double x = 16;
+        double y = 68;
+        bool collides = tileMap.checkCollisionUp(x, y, -5);
+
+        REQUIRE(y == 64.0);
+        REQUIRE(collides);
     }
 }

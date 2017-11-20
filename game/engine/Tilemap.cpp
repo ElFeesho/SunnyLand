@@ -55,6 +55,42 @@ bool SL::Tilemap::checkCollisionDown(double x, double &y, double travelSpeed) {
     return false;
 }
 
+bool SL::Tilemap::checkCollisionRight(double &x, double y, double travelSpeed) {
+    uint32_t tx = static_cast<uint32_t>((x+travelSpeed) / 16);
+    uint32_t ty = static_cast<uint32_t>(y / 16);
+
+    if (layer(2).tile(tx, ty) != 0) {
+        x = tx * 16;
+        return true;
+    }
+
+    return false;
+}
+
+bool SL::Tilemap::checkCollisionLeft(double &x, double y, double travelSpeed) {
+    uint32_t tx = static_cast<uint32_t>((x+travelSpeed) / 16);
+    uint32_t ty = static_cast<uint32_t>(y / 16);
+
+    if (layer(2).tile(tx, ty) != 0) {
+        x = (tx+1) * 16;
+        return true;
+    }
+
+    return false;
+}
+
+bool SL::Tilemap::checkCollisionUp(double x, double &y, double travelSpeed) {
+    uint32_t tx = static_cast<uint32_t>(x / 16);
+    uint32_t ty = static_cast<uint32_t>((y + travelSpeed) / 16);
+
+    if (layer(2).tile(tx, ty) != 0) {
+        y = (ty+1) * 16;
+        return true;
+    }
+
+    return false;
+}
+
 SL::Tilemap::Layer::Layer(Gfx *gfx, Image tileset, uint32_t width, uint32_t height, std::vector<uint32_t> tiles) : _gfx{gfx}, _tileset{std::move(tileset)}, _w{width}, _h{height}, _tiles{
         std::move(tiles)} {
 }
