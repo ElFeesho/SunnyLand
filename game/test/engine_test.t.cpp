@@ -16,6 +16,8 @@ TEST_CASE("[Engine]") {
     mockGfx.simulateAvailableImage("test.xyz", 128, 32);
     mockGfx.simulateAvailableImage("layer.xyz", 200, 200);
     mockGfx.simulateAvailableImage("tilemap.xyz", 160, 160);
+    mockGfx.simulateAvailableImage("bg.xyz", 10, 10);
+    mockGfx.simulateAvailableImage("mg.xyz", 10, 10);
 
     SL::Engine engine{&mockGfx, &mockInput, &mockTime, &mockSleeper};
 
@@ -185,7 +187,11 @@ TEST_CASE("[Engine]") {
               6, 7
           ]
       }
-   ]
+   ],
+   "properties": {
+        "background": "bg.xyz",
+        "middleground": "mg.xyz"
+   }
 })";
 
         auto gameMap = engine.createMap(tilemap, "tilemap.xyz");
@@ -222,7 +228,11 @@ TEST_CASE("[Engine]") {
           "height":1,
           "data":[12]
       }
-   ]
+   ],
+   "properties": {
+        "background": "bg.xyz",
+        "middleground": "mg.xyz"
+   }
 })";
 
         auto gameMap = engine.createMap(tilemap, "tilemap.xyz");
@@ -253,7 +263,11 @@ TEST_CASE("[Engine]") {
           "height":1,
           "data":[0]
       }
-   ]
+   ],
+   "properties": {
+        "background": "bg.xyz",
+        "middleground": "mg.xyz"
+   }
 })";
 
         auto gameMap = engine.createMap(tilemap, "tilemap.xyz");
@@ -294,7 +308,11 @@ TEST_CASE("[Engine]") {
                }
            ]
        }
-   ]
+   ],
+   "properties": {
+        "background": "bg.xyz",
+        "middleground": "mg.xyz"
+   }
 })";
 
         auto gameMap = engine.createMap(tilemap, "tilemap.xyz");
@@ -331,13 +349,58 @@ TEST_CASE("[Engine]") {
                }
            ]
        }
-   ]
+   ],
+   "properties": {
+        "background": "bg.xyz",
+        "middleground": "mg.xyz"
+   }
 })";
 
         auto gameMap = engine.createMap(tilemap, "tilemap.xyz");
 
         REQUIRE(gameMap.cameraSpawnX() == 123);
         REQUIRE(gameMap.cameraSpawnY() == 345);
+    }
+
+    SECTION("Parallax backgrounds can be processed") {
+        const std::string tilemap =
+                R"({
+   "width":1,
+   "height":1,
+   "layers":[
+      {
+          "name":"Background",
+          "width":1,
+          "height":1,
+          "data":[0]
+      },
+      {
+          "name":"Middleground",
+          "width":1,
+          "height":1,
+          "data":[0]
+      },
+      {
+          "type":"objectgroup",
+          "objects":[
+               {
+                   "type":"camera_spawn",
+                   "x":123,
+                   "y":345
+               }
+           ]
+       }
+   ],
+   "properties": {
+        "background": "bg.xyz",
+        "middleground": "mg.xyz"
+   }
+})";
+
+        auto gameMap = engine.createMap(tilemap, "tilemap.xyz");
+
+        REQUIRE(gameMap.bgImage().filename() == "bg.xyz");
+        REQUIRE(gameMap.mgImage().filename() == "mg.xyz");
     }
 
     SECTION("JSON Sprite factory can parse multiple sprites") {

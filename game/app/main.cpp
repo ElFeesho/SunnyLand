@@ -107,8 +107,8 @@ class MainMenuScene : public SL::Scene {
 public:
     explicit MainMenuScene(SL::Engine &engine) :
             _engine{engine},
-            _bg{engine},
             _map{_engine.createMap(readFile("../Resources/first.json"), "../Resources/forest-tileset.png")},
+            _bg{engine, _map},
             _player{SL::JSONSpriteFactory{engine}.parse(readFile("../Resources/fox.json"))} {
 
         _camera.position(_map.cameraSpawnX(), _map.cameraSpawnY());
@@ -186,8 +186,8 @@ public:
 private:
 
     SL::Engine &_engine;
-    LevelBackground _bg;
     SL::Tilemap _map;
+    LevelBackground _bg;
     Player _player;
 
     double _playerX;

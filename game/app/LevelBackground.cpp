@@ -1,7 +1,7 @@
 #include "LevelBackground.h"
 
-LevelBackground::LevelBackground(SL::Engine &engine) : _bg{engine.createParallax("../Resources/island-background.png", 6.0f)},
-                                                       _mg{engine.createParallax("../Resources/island-middleground.png", 1.0f)} {
+LevelBackground::LevelBackground(SL::Engine &engine, SL::Tilemap &map) : _bg{engine.createParallax(map.bgImage().filename(), 6.0f)},
+                                                                         _mg{engine.createParallax(map.mgImage().filename(), 1.0f)} {
 
 }
 

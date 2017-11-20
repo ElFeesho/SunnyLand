@@ -7573,6 +7573,14 @@
   ],
   "nextobjectid": 4,
   "orientation": "orthogonal",
+  "properties": {
+    "background": "../Resources/island-background.png",
+    "middleground": "../Resources/island-middleground.png"
+  },
+  "propertytypes": {
+    "background": "string",
+    "middleground": "string"
+  },
   "renderorder": "right-down",
   "tiledversion": "1.0.3",
   "tileheight": 16,

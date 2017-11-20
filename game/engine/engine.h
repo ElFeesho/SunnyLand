@@ -121,7 +121,7 @@ namespace SL {
             std::vector<uint32_t> _tiles;
         };
 
-        Tilemap(uint32_t width, uint32_t height, std::vector<Layer> layers, int32_t playerSpawnX, int32_t playerSpawnY, int32_t cameraSpawnX, int32_t cameraSpawnY);
+        Tilemap(uint32_t width, uint32_t height, std::vector<Layer> layers, int32_t playerSpawnX, int32_t playerSpawnY, int32_t cameraSpawnX, int32_t cameraSpawnY, Image bgImage, Image mgImage);
 
         Layer &layer(uint32_t index);
 
@@ -130,6 +130,9 @@ namespace SL {
 
         int32_t cameraSpawnX();
         int32_t cameraSpawnY();
+
+        Image &bgImage();
+        Image &mgImage();
 
         uint32_t width();
         uint32_t height();
@@ -143,6 +146,9 @@ namespace SL {
         int32_t _playerSpawnY;
         int32_t _cameraSpawnX;
         int32_t _cameraSpawnY;
+
+        Image _bgImage;
+        Image _mgImage;
     };
 
 
