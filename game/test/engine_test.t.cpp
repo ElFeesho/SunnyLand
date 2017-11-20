@@ -438,7 +438,96 @@ TEST_CASE("[Engine]") {
         REQUIRE(spriteMap.at("idle").frameCount() == 1);
         REQUIRE(spriteMap.at("walk").frameCount() == 2);
         REQUIRE(spriteMap.at("jump").frameCount() == 3);
+    }
 
+
+    SECTION("Can detect collision with floor") {
+
+        const std::string &collisionMap = R"(
+{
+  "layers": [
+    {
+      "data": [
+        0,0,0,0,
+        71,0,0,68,
+        91,0,0,88,
+        68,69,70,71
+      ],
+      "height": 4,
+      "name": "Background",
+      "type": "tilelayer",
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        0,0,0,0,
+        0,0,0,0,
+        0,49,50,0,
+        0,0,0,0
+      ],
+      "height": 4,
+      "name": "Middleground",
+      "type": "tilelayer",
+      "visible": true,
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "data": [
+        0,0,0,0,
+        71,0,0,68,
+        91,0,0,88,
+        68,69,70,71
+      ],
+      "height": 4,
+      "name": "Collision",
+      "opacity": 1,
+      "type": "tilelayer",
+      "visible": true,
+      "width": 4,
+      "x": 0,
+      "y": 0
+    },
+    {
+      "objects": [
+        {
+          "type": "player_spawn",
+          "x": 16,
+          "y": -32
+        },
+        {
+          "type": "camera_spawn",
+          "x": 16,
+          "y": -32
+        }
+      ],
+      "type": "objectgroup"
+    }
+  ],
+  "nextobjectid": 4,
+  "orientation": "orthogonal",
+  "renderorder": "right-down",
+  "tiledversion": "1.0.3",
+  "tileheight": 16,
+   "properties": {
+        "background": "bg.xyz",
+        "middleground": "mg.xyz"
+   },
+  "width": 4,
+  "height": 4
+}
+)";
+        auto tileMap = engine.createMap(collisionMap, "tilemap.xyz");
+
+        double x = 16;
+        double y = 45;
+        bool collides = tileMap.checkCollisionDown(x, y, 5);
+
+        REQUIRE(y == 48.0);
+        REQUIRE(collides);
 
     }
 }

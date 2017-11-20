@@ -287,8 +287,7 @@ public:
             _player.jump();
         }
 
-        if (_playerY >= _map.playerSpawnY()) {
-            _playerY = _map.playerSpawnY();
+        if (_map.checkCollisionDown(_playerX, _playerY, _playerPhysics.ySpeed()) || _map.checkCollisionDown(_playerX+32, _playerY, _playerPhysics.ySpeed())) {
 
             _playerPhysics.hitFloor();
 
@@ -305,10 +304,9 @@ public:
 
         _camera.target(_playerX - 100, _playerY - 100);
 
-        _player.draw(delta, static_cast<int>(_playerX - _camera.x()), static_cast<int>(_playerY - _camera.y()));
+        _player.draw(delta, static_cast<int>(_playerX - _camera.x()), static_cast<int>(_playerY - _camera.y()-32));
 
         _camera.pan();
-
     }
 
 private:
@@ -325,7 +323,6 @@ private:
 
     Camera _camera{};
 };
-
 
 int main(int argc, char **argv) {
     sf::RenderWindow window{{800, 600}, "SunnyLand"};

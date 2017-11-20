@@ -10,7 +10,7 @@ find_package(SFML 2 COMPONENTS system window graphics audio REQUIRED)
 # Game Engine
 #
 
-add_library(engine STATIC engine/engine.cpp engine/json.hpp)
+add_library(engine STATIC engine/engine.cpp engine/json.hpp engine/Parallax.cpp engine/Tilemap.cpp engine/Image.cpp engine/Sprite.cpp engine/JSONSpriteFactory.cpp)
 target_link_libraries(engine INTERFACE ${SFML_LIBRARIES})
 target_include_directories(engine PUBLIC engine)
 

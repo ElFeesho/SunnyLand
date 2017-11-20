@@ -137,6 +137,8 @@ namespace SL {
         uint32_t width();
         uint32_t height();
 
+        bool checkCollisionDown(double x, double &y, double travelSpeed);
+
     private:
         std::vector<Layer> _layers;
         uint32_t _w;

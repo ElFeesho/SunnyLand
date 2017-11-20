@@ -5,6 +5,9 @@ void MockGfx::update() {
 }
 
 SL::Image MockGfx::loadImage(const std::string &filename) {
+    if (_availableImages.find(filename) == _availableImages.end()) {
+        throw std::domain_error("Image not available: " + filename);
+    }
     return _availableImages.at(filename);
 }
 
