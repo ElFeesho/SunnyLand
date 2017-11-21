@@ -3,6 +3,7 @@
 
 #include <SFML/System.hpp>
 #include <SFML/Graphics.hpp>
+#include <utility>
 
 #include "sfml/SFMLGfx.h"
 #include "sfml/SFMLInput.h"
@@ -347,6 +348,41 @@ private:
     Camera _camera{};
 };
 
+class TitleScene : public SL::Scene {
+public:
+    TitleScene(SL::Engine &engine, std::function<void()> closeScreen) : _bg{engine.createParallax("../Resources/island-background.png", 4.0f)}, _mg{engine.createParallax("../Resources/island-middleground.png", 1.0f)}, _title{engine.createSprite("../Resources/title.png")}, _closeScreen{
+            std::move(closeScreen)} {
+
+    }
+
+    void update(long delta) override {
+        _bg.scroll(_scroll, 0);
+        _mg.scroll(_scroll, 0);
+        _scroll++;
+        _bg.draw();
+        _mg.draw();
+
+        _title.draw(100, 100+std::sin(_phase)*20.0);
+        _phase += 0.05;
+    }
+
+    void keyEvent(SL::KeyType key, SL::ActionType action) override {
+        if (action == SL::ActionType::Release && key == SL::KeyType::Jump) {
+            _closeScreen();
+        }
+    }
+
+private:
+    SL::Sprite _title;
+    std::function<void()> _closeScreen;
+    SL::Parallax _bg;
+    SL::Parallax _mg;
+
+    int32_t _scroll{0};
+
+    double _phase{0.0};
+};
+
 int main(int argc, char **argv) {
     sf::RenderWindow window{{800, 600}, "SunnyLand"};
     window.setKeyRepeatEnabled(false);
@@ -360,8 +396,11 @@ int main(int argc, char **argv) {
     SL::Engine engine{&gfx, &input, &time, &sleeper};
 
     MainMenuScene mainMenuScene{engine};
+    TitleScene titleScene{engine, [&]{
+        engine.displayScene(&mainMenuScene);
+    }};
 
-    engine.displayScene(&mainMenuScene);
+    engine.displayScene(&titleScene);
 
     while (engine.update());
 

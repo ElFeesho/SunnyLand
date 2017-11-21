@@ -72,3 +72,8 @@ SL::Tilemap SL::Engine::createMap(const std::string mapData, const std::string t
     return SL::Tilemap(width, height, tilemapLayers, playerSpawnX, playerSpawnY, cameraSpawnX, cameraSpawnY, _gfx->loadImage(bgImageName),
                        _gfx->loadImage(mgImageName));
 }
+
+SL::Sprite SL::Engine::createSprite(const std::string &imageFilename) {
+    Image image = _gfx->loadImage(imageFilename);
+    return SL::Sprite(_gfx, image, image.width(), image.height());
+}

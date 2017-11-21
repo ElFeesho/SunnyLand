@@ -173,6 +173,9 @@ namespace SL {
         Parallax createParallax(const std::string &filename, float travelDampening);
 
         Tilemap createMap(const std::string mapData, const std::string tilesetFile);
+
+        Sprite createSprite(const std::string &imageFilename);
+
     private:
         Gfx *_gfx{nullptr};
         Input *_input{nullptr};

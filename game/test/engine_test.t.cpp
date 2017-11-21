@@ -70,6 +70,16 @@ TEST_CASE("[Engine]") {
         REQUIRE(mockSleeper.sleepInvokedTime == 500L);
     }
 
+    SECTION("Engine can create a non animated sprite from an image") {
+        SL::Sprite sprite = engine.createSprite("test.xyz");
+
+        REQUIRE(sprite.frameCount() == 1);
+
+        sprite.draw(0, 0, false);
+
+        REQUIRE(mockGfx.drawnImage == "test.xyz,0,0,0,0,128,32,0");
+    }
+
     SECTION("Engine can create a sprite from an image") {
         SL::Sprite sprite = engine.createSprite("test.xyz", 32, 32);
 
