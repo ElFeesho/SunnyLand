@@ -4,31 +4,31 @@
       "name":"idle",
       "cw":33,
       "ch":32,
-      "img":"../Resources/fox-player-idle.png"
+      "img":"resources/spritesheets/player/fox-player-idle.png"
     },
     {
       "name":"walk",
       "cw":33,
       "ch":32,
-      "img":"../Resources/fox-player-run.png"
+      "img":"resources/spritesheets/player/fox-player-run.png"
     },
     {
       "name":"jump",
       "cw":33,
       "ch":32,
-      "img":"../Resources/fox-player-jump.png"
+      "img":"resources/spritesheets/player/fox-player-jump.png"
     },
     {
       "name":"fall",
       "cw":33,
       "ch":32,
-      "img":"../Resources/fox-player-fall.png"
+      "img":"resources/spritesheets/player/fox-player-fall.png"
     },
     {
       "name":"duck",
       "cw":33,
       "ch":32,
-      "img":"../Resources/fox-player-duck.png"
+      "img":"resources/spritesheets/player/fox-player-duck.png"
     }
   ]
 }

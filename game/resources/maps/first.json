@@ -7574,8 +7574,8 @@
   "nextobjectid": 4,
   "orientation": "orthogonal",
   "properties": {
-    "background": "../Resources/island-background.png",
-    "middleground": "../Resources/island-middleground.png"
+    "background": "resources/environment/layers/island-background.png",
+    "middleground": "resources/environment/layers/island-middleground.png"
   },
   "propertytypes": {
     "background": "string",

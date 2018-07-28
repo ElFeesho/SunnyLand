@@ -69,11 +69,6 @@ set_source_files_properties(${RES_SOURCES} PROPERTIES MACOSX_PACKAGE_LOCATION Re
 
 target_link_libraries(sunnyland PUBLIC engine ${SFML_LIBRARIES})
 
-#set_target_properties(sunnyland PROPERTIES
-#        MACOSX_BUNDLE TRUE
-#        MACOSX_FRAMEWORK_IDENTIFIER org.cmake.ExecutableTarget
-#        RESOURCE "${RESOURCES}")
-
 #
 # Unit tests
 #

@@ -226,9 +226,9 @@ class MainMenuScene : public SL::Scene {
 public:
     explicit MainMenuScene(SL::Engine &engine) :
             _engine{engine},
-            _map{_engine.createMap(readFile("../Resources/first.json"), "../Resources/forest-tileset.png")},
+            _map{_engine.createMap(readFile("resources/maps/first.json"), "resources/environment/layers/forest-tileset.png")},
             _bg{engine, _map},
-            _player{SL::JSONSpriteFactory{engine}.parse(readFile("../Resources/fox.json"))} {
+            _player{SL::JSONSpriteFactory{engine}.parse(readFile("resources/fox.json"))} {
 
         _camera.position(_map.cameraSpawnX(), _map.cameraSpawnY());
         _camera.target(_map.playerSpawnX(), _map.playerSpawnY() - 100);
@@ -350,7 +350,7 @@ private:
 
 class TitleScene : public SL::Scene {
 public:
-    TitleScene(SL::Engine &engine, std::function<void()> closeScreen) : _bg{engine.createParallax("../Resources/island-background.png", 4.0f)}, _mg{engine.createParallax("../Resources/island-middleground.png", 1.0f)}, _title{engine.createSprite("../Resources/title.png")}, _closeScreen{
+    TitleScene(SL::Engine &engine, std::function<void()> closeScreen) : _bg{engine.createParallax("resources/environment/layers/island-background.png", 4.0f)}, _mg{engine.createParallax("resources/environment/layers/island-middleground.png", 1.0f)}, _title{engine.createSprite("resources/title/title.png")}, _closeScreen{
             std::move(closeScreen)} {
 
     }
@@ -362,7 +362,7 @@ public:
         _bg.draw();
         _mg.draw();
 
-        _title.draw(100, 100+std::sin(_phase)*20.0);
+        _title.draw(100, static_cast<int32_t>(100 + std::sin(_phase) * 20.0));
         _phase += 0.05;
     }
 
