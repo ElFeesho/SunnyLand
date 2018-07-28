@@ -1,4 +1,5 @@
 #include <fstream>
+#include <iterator>
 #include "fileio.h"
 
 std::string readFile(const std::string &filename) {

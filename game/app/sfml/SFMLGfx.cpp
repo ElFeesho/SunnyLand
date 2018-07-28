@@ -4,13 +4,13 @@ SFMLGfx::SFMLGfx(sf::RenderWindow &window) : _window{window} {
 
 }
 
-SL::Image SFMLGfx::loadImage(const std::__1::string &filename) {
+SL::Image SFMLGfx::loadImage(const std::string &filename) {
     if (_loadedImages.find(filename) == _loadedImages.end()) {
         sf::Texture newImage{};
         if (!newImage.loadFromFile(filename)) {
             throw std::domain_error("Failed to load " + filename + " image");
         }
-        _loadedImages.insert({filename, std::__1::move(newImage)});
+        _loadedImages.insert({filename, std::move(newImage)});
     }
 
     sf::Texture &image = _loadedImages[filename];

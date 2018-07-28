@@ -107,8 +107,6 @@ namespace SL {
         class Layer {
         public:
             Layer(Gfx *gfx, Image tileset, uint32_t width, uint32_t height, std::vector<uint32_t> tiles);
-            Layer(Layer &other) = default;
-            Layer(Layer &&other) = default;
             int32_t tile(uint32_t x, uint32_t y);
 
             void draw(int32_t x, int32_t y);
@@ -172,7 +170,7 @@ namespace SL {
 
         Parallax createParallax(const std::string &filename, float travelDampening);
 
-        Tilemap createMap(const std::string mapData, const std::string tilesetFile);
+        Tilemap createMap(std::string mapData, std::string tilesetFile);
 
         Sprite createSprite(const std::string &imageFilename);
 
